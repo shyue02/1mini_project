@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="site.metacoding.miniproject.domain.person.PersonDao">
+
+	<select id="findAll"
+		resultType="site.metacoding.miniproject.domain.person.Person">
+		SELECT *
+		FROM person
+	</select>
+
+	<select id="findById"
+		resultType="site.metacoding.miniproject.domain.person.Person">
+		SELECT *
+		FROM person
+		WHERE person_id = #{personId}
+	</select>
+
+	<select id="personInfo"
+		resultType="site.metacoding.miniproject.web.dto.response.PersonInfoDto">
+		SELECT *
+		FROM person
+		WHERE person_id = #{personId}
+	</select>
+
+	<select id="findToId" resultType="Integer">
+		SELECT person_id
+		FROM person
+		WHERE user_id = #{personId}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO person(user_id, person_name,
+		person_phone, person_email,
+		is_Gender, address, degree, career,
+		created_At )
+		VALUE(#{userId}, #{personName}, #{personPhone},
+		#{personEmail}, #{isGender},
+		#{address}, #{degree}, #{career}, now())
+	</insert>
+
+	<delete id="deleteById">
+		DELETE FROM person
+		WHERE person_id = #{personId}
+	</delete>
+
+	<update id="update">
+		Update person
+		SET person_name =#{personName},
+		person_email = #{personEmail} ,
+		is_Gender=#{isGender},
+		address=#{address}, degree=#{degree}, career
+		=#{career}
+		WHERE person_id
+		= #{personId}
+	</update>
+
+	<select id="findToPersonRecommned"
+		resultType="site.metacoding.miniproject.web.dto.response.PersonRecommendListDto">
+		SELECT COUNT(subject_id) AS subjectId, FIRST.*, person_skill.skill
+		FROM recommend LEFT OUTER JOIN
+		(
+		SELECT person.user_id, person.person_id,
+		person.person_name, resume.resume_title,
+		person.career, person.address
+		FROM person LEFT OUTER JOIN resume
+		ON person.person_id =
+		resume.person_id
+		) FIRST
+		ON recommend.subject_id = FIRST.user_id
+		LEFT OUTER
+		JOIN person_skill
+		ON FIRST.person_id = person_skill.person_id
+		GROUP BY
+		(subject_id)
+		ORDER BY subject_id
+	</select>
+
+</mapper>

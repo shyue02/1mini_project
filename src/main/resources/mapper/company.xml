@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="site.metacoding.miniproject.domain.company.CompanyDao">
+
+	<select id="findAll"
+		resultType="site.metacoding.miniproject.domain.company.Company">
+		SELECT *
+		FROM company
+	</select>
+
+	<select id="findById"
+		resultType="site.metacoding.miniproject.domain.company.Company">
+		SELECT *
+		FROM company
+		WHERE company_Id = #{companyId}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO company(user_Id, company_Name,
+		company_Email, company_Phone,
+		history, address, introduction, created_At)
+		VALUE(#{userId}, #{companyName}, #{companyEmail}, #{companyPhone},
+		#{history}, #{address}, #{introduction}, now())
+	</insert>
+
+	<delete id="deleteById">
+		DELETE FROM company
+		WHERE company_Id = #{companyId}
+	</delete>
+
+	<update id="update">
+		Update company
+		SET company_name = #{companyName},
+		company_email = #{companyEmail},
+		company_phone = #{companyPhone}, tech
+		= #{tech}, address = #{address},
+		ceoName = #{ceoName}
+		WHERE company_id =
+		#{companyId}
+	</update>
+
+	<select id="findToRecommned"
+		resultType="site.metacoding.miniproject.web.dto.response.CompanyRecommendDto">
+		SELECT COUNT(subject_id) AS recommend_count , FIRST.*
+		FROM recommend LEFT OUTER JOIN (SELECT company.user_id,
+		company.company_id, company.company_name,company.address,
+		notice.salary, company.tech
+		FROM company LEFT OUTER JOIN notice
+		ON company.company_id = notice.company_id) FIRST
+		ON recommend.subject_id = FIRST.user_id
+		GROUP BY (subject_id)
+		ORDER BY subject_id
+	</select>
+
+</mapper>

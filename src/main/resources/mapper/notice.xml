@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.metacoding.miniproject.domain.notice.NoticeDao">
+  <select id="findAll" resultType="site.metacoding.miniproject.domain.notice.Notice">
+    SELECT *
+    FROM Notice
+  </select>
+
+  <select id="findById" resultType="site.metacoding.miniproject.domain.notice.Notice">
+    SELECT *
+    FROM Notice
+    WHERE notice_id = #{noticeId}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO Notice(company_id, job, salary, created_At)
+    VALUE(#{companyId}, #{job}, #{salary}, now())
+  </insert>
+
+  <delete id="deleteById">
+    DELETE FROM Notice
+    WHERE notice_id = #{noticeId}
+  </delete>
+
+  <update id="update">
+    Update Notice
+    SET job = #{job}, salary = #{salary}
+    WHERE notice_id = #{noticeId}
+  </update>
+
+
+</mapper>
